@@ -1,0 +1,53 @@
+# GET http://localhost:8002/news
+# Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImZyZWRkeSIsImlhdCI6MTU5NjA2OTMxNywiZXhwIjoxNTk2MDY5MzMyfQ._60LU4iMq-RrwzFNbQLzgZS1mHJ8JgTNWGNVMKaYcPI
+# ###
+GET http://localhost:8002/posts
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InJvZ2VyIiwiaWF0IjoxNTk2OTAxNzU2LCJleHAiOjE1OTY5MDE3NzF9.6LJYtdNj8G1WDUembJuDSmowqmnUqEM3oVN7sd1WBIk
+###
+
+
+
+# ###
+
+# POST http://localhost:8001/token
+# Content-Type: application/json
+
+# {
+#     "token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImZyZWRkeSIsImlhdCI6MTU5NjA2OTM3M30.O9vUpz43Q2fMFV6k7Y9q1E_SlJZI4qSUWiTFbAXQaBE"
+# }
+
+# ###
+
+# DELETE http://localhost:8001/logout
+# Content-Type: application/json
+
+# {
+
+#     "token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImZyZWRkeSIsImlhdCI6MTU5NjA2OTM3M30.O9vUpz43Q2fMFV6k7Y9q1E_SlJZI4qSUWiTFbAXQaBE"
+# }
+
+# ###
+# POST http://localhost:8001/login
+# Content-Type: application/json
+
+# {
+#     "username":"freddy"
+# }
+
+###
+
+POST http://localhost:8001/login
+Content-Type: application/json
+
+{
+    "username":"nuevo",
+    "password":"nuevo"
+}
+###
+POST http://localhost:8001/register
+Content-Type: application/json
+
+{
+    "username":"mimi4",
+    "password":"mimi4"
+}

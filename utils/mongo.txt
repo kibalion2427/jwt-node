@@ -1,0 +1,5 @@
+
+https://docs.mongodb.com/manual/tutorial/install-mongodb-on-os-x-tarball/
+
+###START MONGO
+mongod --dbpath /usr/local/var/mongodb --logpath /usr/local/var/log/mongodb/mongo.log --fork
