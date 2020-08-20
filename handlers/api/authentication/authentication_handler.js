@@ -3,7 +3,10 @@ require("dotenv").config();
 var HashMap = require("hashmap");
 const loginQueryHandler = require("../../database/login_db_handler");
 const registerQueryHandler = require("../../database/register_db_handler");
-const usernameCheck = require("../../database/check_db_user");
+const {
+  usernameCheck,
+  userSessionCheck,
+} = require("../../database/check_db_user");
 const passwordHash = require("../../../utils/password-hash");
 const {
   userNotFound,
@@ -30,7 +33,13 @@ const {
   getLoginData,
   getUserData,
   getLogoutData,
+  getRegisterData,
+  getSessionData,
 } = require("../../validators/Authentication");
+
+
+const CONSTANTS = require("../../../config/constants");
+
 
 class AuthenticationHandler {
   constructor() {
@@ -92,7 +101,7 @@ class AuthenticationHandler {
     return refreshTokenOKResponse(response, payload);
   };
   register = async (request, response) => {
-    const data = getLoginData(request, response);
+    const data = getRegisterData(request, response);
     try {
       data.online = "Y";
       data.socketID = "";
@@ -125,9 +134,22 @@ class AuthenticationHandler {
     }
   };
 
-  pushRefreshTokensToUser = (userId, refreshToken) => {
-    this.refreshTokens.set(userId, refreshToken);
-    // console.log("OBJECTO", this.refreshTokens);
+  userSessionCheck = async (request, response) => {
+    const { userId } = getSessionData(request, response);
+    try {
+      console.log("session check handler", userId);
+      const result = await userSessionCheck({ userId: userId });
+      response.status(CONSTANTS.SERVER_OK_HTTP_CODE).json({
+        error: false,
+        username: result.username,
+        message: CONSTANTS.USER_LOGIN_OK,
+      });
+    } catch (error) {
+      response.status(CONSTANTS.SERVER_NOT_ALLOWED_HTTP_CODE).json({
+        error: true,
+        message: CONSTANTS.USER_NOT_LOGGED_IN,
+      });
+    }
   };
 }
 

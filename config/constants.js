@@ -1,7 +1,3 @@
-/*
- * Real time private chatting app using Angular 2, Nodejs, mongodb and Socket.io
- * @author Shashank Tiwari
- */
 
 /* Validation related  constants starts*/
 module.exports.USERNAME_NOT_FOUND = `username can't be empty.`;

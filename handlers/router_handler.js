@@ -4,6 +4,7 @@ const {
   register,
   usernameCheckAvailability,
   refreshToken,
+  userSessionCheck,
 } = require("./api/authentication/authentication_handler");
 
 class RouteHandler {
@@ -21,6 +22,9 @@ class RouteHandler {
   }
   refreshTokenHandler(request, response) {
     return refreshToken(request, response);
+  }
+  userSessionCheck(request, response) {
+    return userSessionCheck(request, response);
   }
 }
 

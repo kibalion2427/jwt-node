@@ -4,17 +4,22 @@ const { createAccessToken, createRefreshToken } = require("../helpers/Tokens");
 class ResponseOK {
   constructor() {}
   userLoginOK(response, user) {
+    console.log("RESPONSE LOGIN",user)
     return response.status(CONSTANTS.SERVER_OK_HTTP_CODE).json({
       error: false,
       userId: user._id,
+      isAdmin:user.isAdmin,
       accessToken: createAccessToken(user.username),
       //   refreshToken: createRefreshToken(user.username),
       message: CONSTANTS.USER_LOGIN_OK,
     });
   }
   userRegisterOKResponse(response, user) {
+    console.log("RESPONSE REGISTER",user)
     return response.status(CONSTANTS.SERVER_OK_HTTP_CODE).json({
       error: false,
+      userId: user._id,
+      isAdmin:user.isAdmin,
       accessToken: createAccessToken(user.username),
       message: CONSTANTS.USER_REGISTRATION_OK,
     });

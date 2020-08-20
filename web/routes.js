@@ -15,6 +15,7 @@ class Routes {
       "/usernameAvailable",
       routerHandler.usernameCheckAvailability
     );
+    this.app.post("/userSessionCheck",routerHandler.userSessionCheck)
   }
 
   routesConfig() {
