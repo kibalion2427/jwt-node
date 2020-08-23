@@ -37,9 +37,7 @@ const {
   getSessionData,
 } = require("../../validators/Authentication");
 
-
 const CONSTANTS = require("../../../config/constants");
-
 
 class AuthenticationHandler {
   constructor() {
@@ -51,6 +49,7 @@ class AuthenticationHandler {
 
     try {
       const user = await loginQueryHandler.getUserByUsername(data.username);
+      // console.log("user by name",user)
       if (!user) return userNotFound(response);
 
       const validPassword = passwordHash.compareHash(
@@ -58,8 +57,7 @@ class AuthenticationHandler {
         user.password
       );
       if (!validPassword) return invalidPassword(response);
-
-      await loginQueryHandler.makeUserOnline(user.id);
+      await loginQueryHandler.makeUserOnline(user._id);
       sendRefreshToken(response, createRefreshToken(user.username));
       // this.pushRefreshTokensToUser(
       //   user.username,
@@ -67,6 +65,7 @@ class AuthenticationHandler {
       // );
       return userLoginOK(response, user);
     } catch (error) {
+      console.log(error);
       return userLoginFailed(response);
     }
   };
@@ -104,7 +103,7 @@ class AuthenticationHandler {
     const data = getRegisterData(request, response);
     try {
       data.online = "Y";
-      data.socketID = "";
+      data.socketId = "";
       data.password = passwordHash.createHash(data.password);
       const userExists = await loginQueryHandler.getUserByUsername(
         data.username

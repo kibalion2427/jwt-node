@@ -36,6 +36,7 @@ class LoginQueryHandler {
           { $set: { online: "Y" } },
           { new: true, upsert: true },
           (error, result) => {
+            // console.log("makeuseronline",result)
             CLIENT.close();
             error ? reject(error) : resolve(result.value);
           }
@@ -50,11 +51,12 @@ class LoginQueryHandler {
     const data = {
       $set: {
         online: "N",
+        socketId:""
       },
     };
     return new Promise(async (resolve, reject) => {
       try {
-        const [DB, CLIENT, ObjectID] = this.Mongodb.onConnect();
+        const [DB, CLIENT, ObjectID] = await this.Mongodb.onConnect();
         let condition = {};
         isSocketId
           ? (condition.isSocketId = userID)

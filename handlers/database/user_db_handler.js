@@ -16,16 +16,18 @@ class UserQueryHandler {
     };
     return new Promise(async (resolve, reject) => {
       try {
-        const [DB, CLIENT, ObjectID] = this.Mongodb.onConnect();
+        const [DB, CLIENT, ObjectID] = await this.Mongodb.onConnect();
         DB.collection("users").update(
           { _id: ObjectID(data.id) },
           data.value,
-          (err, result) => {
+          (error, result) => {
             CLIENT.close();
             error ? reject(error) : resolve(result);
           }
         );
-      } catch (error) {}
+      } catch (error) {
+        reject(error);
+      }
     });
   };
 }

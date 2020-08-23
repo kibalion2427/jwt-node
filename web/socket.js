@@ -2,7 +2,7 @@
 
 const socketHandler = require("../handlers/socket_handler");
 const CONSTANTS = require("../config/constants");
-const { logout } = require("../handlers/database/login_db_handler");
+const dbHandler = require("../handlers/database/login_db_handler");
 
 class Socket {
   constructor(socket) {
@@ -10,16 +10,22 @@ class Socket {
   }
   socketEvents() {
     this.io.on("connection", (socket) => {
+      console.log("register socket events",socket.id);
       //logout user
       socket.on("logout", async (data) => {
+        console.log("logout user");
+        const userId = data.userId;
         try {
-          const userId = dta.userId;
-          await logout(userId);
+          await dbHandler.logout(userId);
           this.io.to(socket.id).emit("logout-response", {
             error: false,
             message: CONSTANTS.USER_LOGGED_OUT,
             userId: userId,
           });
+          // console.log("connected sockets", socket);
+          // socket[socket.id].disconnect();
+
+          // console.log("sockets after logout",socket.sockets)
         } catch (error) {
           console.log(error);
           this.io.to(socket.id).emit("logout-response", {
@@ -34,6 +40,8 @@ class Socket {
 
   socketConfig() {
     this.io.use(async (socket, next) => {
+      console.log("socket connection user", socket.request._query["userId"]);
+      // console.log("socket online", socket);
       try {
         await socketHandler.addSocketId({
           userId: socket.request._query["userId"],

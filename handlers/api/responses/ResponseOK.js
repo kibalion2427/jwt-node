@@ -4,7 +4,7 @@ const { createAccessToken, createRefreshToken } = require("../helpers/Tokens");
 class ResponseOK {
   constructor() {}
   userLoginOK(response, user) {
-    console.log("RESPONSE LOGIN",user)
+    // console.log("RESPONSE LOGIN",user)
     return response.status(CONSTANTS.SERVER_OK_HTTP_CODE).json({
       error: false,
       userId: user._id,
@@ -15,7 +15,7 @@ class ResponseOK {
     });
   }
   userRegisterOKResponse(response, user) {
-    console.log("RESPONSE REGISTER",user)
+    // console.log("RESPONSE REGISTER",user)
     return response.status(CONSTANTS.SERVER_OK_HTTP_CODE).json({
       error: false,
       userId: user._id,

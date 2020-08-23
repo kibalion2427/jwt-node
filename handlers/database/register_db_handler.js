@@ -6,7 +6,7 @@ class RegisterQueryHandler {
   }
 
   registerUser(data) {
-    console.log("register data", data);
+    // console.log("register data", data);
     return new Promise(async (resolve, reject) => {
       try {
         const [DB, CLIENT, ObjectID] = await this.Mongodb.onConnect();

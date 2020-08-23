@@ -1,3 +1,7 @@
 db.users.find({"username": "admin"});
+db.users.find({"username": "root3"});
 
 db.users.find({});
+
+
+db.users.remove({});
