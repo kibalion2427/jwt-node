@@ -1,7 +1,49 @@
 db.users.find({"username": "admin"});
 db.users.find({"username": "root3"});
 
+//FIND
+
+db.messages.aggregate([
+          {
+            $match: {
+              toUserId: { $eq: "5f44774663e20927cb7246ad" },
+            },
+          },{
+            $group:{
+              _id:"$fromUserId"
+            }
+          }
+          ,{
+            $project:{
+              fromUserId:true
+            }
+          }
+        ]).toArray()
 db.users.find({});
+db.messages.find({});
+db.messages.find({
+      '$or' : [
+        { '$and': [
+          {
+            'toUserId': "5f49af406199c121dfa70256"
+          },{
+            'fromUserId': "5f44774663e20927cb7246ad"
+          }
+        ]
+      },{
+        '$and': [ 
+          {
+            'toUserId': "5f44774663e20927cb7246ad"
+          }, {
+            'fromUserId': "5f49af406199c121dfa70256"
+          }
+        ]
+      }
+    ]
+  }).sort({ timestamp: 1 })
 
-
+//DELETE
 db.users.remove({});
+db.messages.remove({});
+
+

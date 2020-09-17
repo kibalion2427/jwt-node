@@ -5,19 +5,28 @@ class LoginQueryHandler {
     this.Mongodb = require("../../config/db");
   }
 
-  getUserByUsername(username) {
+  getUser(userId = "", username = "") {
+    console.log(userId, username);
     return new Promise(async (resolve, reject) => {
       try {
         const [DB, CLIENT, ObjectID] = await this.Mongodb.onConnect();
+        let condition = "";
+        if (userId && userId !== "") {
+          condition = { _id: ObjectID(userId) };
+        }
+        if (username && username !== "") {
+          condition = { username: username };
+        }
+        console.log("condition",condition);
+
         DB.collection("users")
-          .find({
-            username: username,
-          })
+          .find(condition)
           .toArray((error, result) => {
             CLIENT.close();
             if (error) {
               reject(error);
             }
+            console.log(result[0]);
             resolve(result[0]);
           });
       } catch (error) {
@@ -51,7 +60,7 @@ class LoginQueryHandler {
     const data = {
       $set: {
         online: "N",
-        socketId:""
+        socketId: "",
       },
     };
     return new Promise(async (resolve, reject) => {

@@ -5,6 +5,10 @@ const {
   usernameCheckAvailability,
   refreshToken,
   userSessionCheck,
+  getUser,
+  getMessages,
+  getChatList
+  
 } = require("./api/authentication/authentication_handler");
 
 class RouteHandler {
@@ -25,6 +29,15 @@ class RouteHandler {
   }
   userSessionCheck(request, response) {
     return userSessionCheck(request, response);
+  }
+  getUser(request,response){
+    return getUser(request,response)
+  }
+  getMessages(request,response){
+    return getMessages(request,response)
+  }
+  getChatList(request,response){
+    return getChatList(request,response)
   }
 }
 

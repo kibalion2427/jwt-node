@@ -30,6 +30,46 @@ class UserQueryHandler {
       }
     });
   };
+
+  getUserInfo = ({ userId, socketId = false }) => {
+    let queryProjection = null;
+    if (socketId) {
+      queryProjection = {
+        socketId: true,
+      };
+    } else {
+      queryProjection = {
+        username: true,
+        online: true,
+        _id: false,
+        socketId:true,
+        id: "$_id", //to avoid showing db fields schema, return id instead _id
+      };
+    }
+    return new Promise(async (resolve, reject) => {
+      try {
+        const [DB, CLIENT, ObjectID] = await this.Mongodb.onConnect();
+        DB.collection("users")
+          .aggregate([
+            {
+              $match: {
+                _id: ObjectID(userId),
+              },
+            },
+            { $project: queryProjection },
+          ])
+          .toArray((error, result) => {
+            CLIENT.close();
+            if (error) {
+              reject(error);
+            }
+            socketId ? resolve(result[0]["socketId"]) : resolve(result);
+          });
+      } catch (error) {
+        reject(error);
+      }
+    });
+  };
 }
 
 module.exports = new UserQueryHandler();

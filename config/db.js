@@ -21,7 +21,7 @@ class Db {
             console.log("MONGODB Connection FAILED");
             reject(err);
           } else {
-            console.log(" MONGODB Connection SUCCESS");
+            // console.log(" MONGODB Connection SUCCESS");
             assert.equal(null, err);
             resolve([client.db("local"), client, this.ObjectID]);
           }

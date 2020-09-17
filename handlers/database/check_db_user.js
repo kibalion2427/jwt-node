@@ -4,6 +4,7 @@ const Mongodb = require("../../config/db");
 
 module.exports = {
   usernameCheck: function (data) {
+    console.log("data",data)
     return new Promise(async (resolve, reject) => {
       try {
         const [DB, CLIENT, ObjectID] = await Mongodb.onConnect();
@@ -19,7 +20,7 @@ module.exports = {
     });
   },
   userSessionCheck: function (data) {
-    console.log("CHECKING SESSION",data)
+    // console.log("CHECKING SESSION",data)
     return new Promise(async (resolve, reject) => {
       try {
         const [DB, CLIENT, ObjectID] = await Mongodb.onConnect();

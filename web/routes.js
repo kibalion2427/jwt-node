@@ -15,7 +15,10 @@ class Routes {
       "/usernameAvailable",
       routerHandler.usernameCheckAvailability
     );
-    this.app.post("/userSessionCheck",routerHandler.userSessionCheck)
+    this.app.post("/userSessionCheck", routerHandler.userSessionCheck);
+    this.app.post("/user", routerHandler.getUser); //find by username or id
+    this.app.post("/getMessages", routerHandler.getMessages); //find by username or id
+    this.app.post("/getChatList", routerHandler.getChatList);
   }
 
   routesConfig() {

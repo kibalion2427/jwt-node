@@ -1,4 +1,5 @@
 "use strict";
+//TODO Move getMessages method to another class handler
 require("dotenv").config();
 var HashMap = require("hashmap");
 const loginQueryHandler = require("../../database/login_db_handler");
@@ -38,6 +39,7 @@ const {
 } = require("../../validators/Authentication");
 
 const CONSTANTS = require("../../../config/constants");
+const chat_db_handler = require("../../database/chat_db_handler");
 
 class AuthenticationHandler {
   constructor() {
@@ -46,10 +48,11 @@ class AuthenticationHandler {
 
   login = async (request, response) => {
     const data = getLoginData(request, response);
+    console.log("logync", data);
 
     try {
-      const user = await loginQueryHandler.getUserByUsername(data.username);
-      // console.log("user by name",user)
+      const user = await loginQueryHandler.getUser("", data.username);
+
       if (!user) return userNotFound(response);
 
       const validPassword = passwordHash.compareHash(
@@ -105,9 +108,7 @@ class AuthenticationHandler {
       data.online = "Y";
       data.socketId = "";
       data.password = passwordHash.createHash(data.password);
-      const userExists = await loginQueryHandler.getUserByUsername(
-        data.username
-      );
+      const userExists = await loginQueryHandler.getUser("", data.username);
       if (userExists) return userDuplicatedResponse(response);
 
       const registered = await registerQueryHandler.registerUser(data);
@@ -123,9 +124,12 @@ class AuthenticationHandler {
   };
 
   usernameCheckAvailability = async (request, response) => {
-    const username = getUserData(request, response);
+    const data = getUserData(request, response);
+    console.log("username to check", data);
     try {
-      const count = await usernameCheck({ username: username.toLowerCase() });
+      const count = await usernameCheck({
+        username: data.username.toLowerCase(),
+      });
       if (count > 0) return usernameNotAvailableResponse(response);
       return userNameAvailableOKResponse(response);
     } catch (error) {
@@ -136,7 +140,7 @@ class AuthenticationHandler {
   userSessionCheck = async (request, response) => {
     const { userId } = getSessionData(request, response);
     try {
-      console.log("session check handler", userId);
+      // console.log("session check handler", userId);
       const result = await userSessionCheck({ userId: userId });
       response.status(CONSTANTS.SERVER_OK_HTTP_CODE).json({
         error: false,
@@ -145,6 +149,84 @@ class AuthenticationHandler {
       });
     } catch (error) {
       response.status(CONSTANTS.SERVER_NOT_ALLOWED_HTTP_CODE).json({
+        error: true,
+        message: CONSTANTS.USER_NOT_LOGGED_IN,
+      });
+    }
+  };
+
+  getUser = async (request, response) => {
+    const userData = getUserData(request, response);
+    // console.log("data",userData);
+    try {
+      const user = await loginQueryHandler.getUser(
+        userData.userId,
+        userData.username
+      );
+      if (!user) return userNotFound(response);
+      response.status(CONSTANTS.SERVER_OK_HTTP_CODE).json({
+        error: false,
+        user: {
+          userId: user._id,
+          username: user.username,
+          isAdmin: user.isAdmin,
+          online: user.online,
+          socketId: user.socketId,
+        },
+
+        message: "User found success",
+      });
+    } catch (error) {
+      response.status(CONSTANTS.SERVER_OK_HTTP_CODE).json({
+        error: true,
+        username: userData.username,
+        message: CONSTANTS.USER_NOT_FOUND,
+      });
+    }
+  };
+
+  getMessages = async (request, response) => {
+    const userId = request.body.userId;
+    const toUserId = request.body.toUserId;
+    if (userId === "") {
+      response.status(CONSTANTS.SERVER_ERROR_HTTP_CODE).json({
+        error: true,
+        message: CONSTANTS.USERID_NOT_FOUND,
+      });
+    }
+    try {
+      const messageResponse = await chat_db_handler.getMessages({
+        userId: userId,
+        toUserId: toUserId,
+      });
+      response.status(CONSTANTS.SERVER_OK_HTTP_CODE).json({
+        error: false,
+        messages: messageResponse,
+      });
+    } catch (error) {
+      response.status(CONSTANTS.SERVER_NOT_ALLOWED_HTTP_CODE).json({
+        error: true,
+        message: CONSTANTS.USER_NOT_LOGGED_IN,
+      });
+    }
+  };
+
+  getChatList = async (request, response) => {
+    const userId = request.body.userId;
+    if (userId === "") {
+      response.status(CONSTANTS.SERVER_ERROR_HTTP_CODE).json({
+        error: true,
+        message: CONSTANTS.USERID_NOT_FOUND,
+      });
+    }
+    try {
+      const chatListResponse = await chat_db_handler.getChatList(userId);
+      response.status(CONSTANTS.SERVER_OK_HTTP_CODE).json({
+        error: false,
+        chatList: chatListResponse,
+      });
+    } catch (error) {
+      response.status(CONSTANTS.SERVER_ERROR_HTTP_CODE).json({
         error: true,
         message: CONSTANTS.USER_NOT_LOGGED_IN,
       });

@@ -15,6 +15,7 @@ class UserValidator {
       username: request.body.username.toLowerCase(),
       password: request.body.password,
     };
+    // console.log("data",data)
     return data;
   };
   getRegisterData = (request, response) => {
@@ -30,8 +31,11 @@ class UserValidator {
   };
 
   getUserData = (request, response) => {
-    if (!request.body.username) return userNotFound(response);
-    return request.body.username;
+    if (!request.body.username && !request.body.userId)
+      return userNotFound(response);
+    if (request.body.username || request.body.userId) {
+      return {userId:request.body.userId,username:request.body.username};
+    }
   };
 
   getLogoutData = (request, response) => {
